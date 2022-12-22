@@ -79,10 +79,21 @@ export const connectTimelineStream = (timelineId, channelName, params = {}, opti
         }
       },
 
+      shouldUpdate (timelineId, streamName) {
+        const stream = streamName[0];
+        if (timelineId === 'home' && streamName.startsWith('user')) {
+          return true;
+        }
+
+        return timelineId === stream;
+      },
+
       onReceive (data) {
         switch(data.event) {
         case 'update':
-          dispatch(updateTimeline(timelineId, JSON.parse(data.payload), options.accept));
+          if (this.shouldUpdate(timelineId, data.stream)) {
+            dispatch(updateTimeline(timelineId, JSON.parse(data.payload), options.accept));
+          }
           break;
         case 'status.update':
           dispatch(updateStatus(JSON.parse(data.payload)));
