@@ -1,0 +1,14 @@
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          yarn
+          TARGET=distribution ./build.sh
+          zip mastofe.zip -r distribution
+      - uses: actions/upload-artifact@v3
+        with:
+          name: mastofe
+          path: mastofe.zip
